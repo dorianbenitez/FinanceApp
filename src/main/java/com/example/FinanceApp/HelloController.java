@@ -28,11 +28,13 @@ public class HelloController {
 
         if(result != null && result.iterator().hasNext()) {
             for (User user : result) {
-                String userString = String.format("User{id=%d, firstName='%s', lastName='%s', dateOfBirth=%s}",
+                String userString = String.format("User{id=%d, email='%s', firstName='%s', lastName='%s', dateOfBirth=%s, password='%s'}",
                         user.getId(),
+                        user.getEmail(),
                         user.getFirstName(),
                         user.getLastName(),
-                        user.getDateOfBirth());
+                        user.getDateOfBirth(),
+                        user.getPassword());
                 joiner.add(userString);
             }
             System.out.println(joiner.toString());
