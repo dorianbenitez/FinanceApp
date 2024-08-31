@@ -1,5 +1,7 @@
 package com.example.FinanceApp.controller;
 
+import com.example.FinanceApp.model.AuthResponse;
+import com.example.FinanceApp.model.LoginRequest;
 import com.example.FinanceApp.model.User;
 import com.example.FinanceApp.repository.UserRepository;
 import com.example.FinanceApp.service.UserLoginService;
@@ -55,30 +57,17 @@ public class UserLoginController {
 
     @PostMapping("/addUser")
     public User addOneUser(@RequestBody User user) {
-        return this.userRepository.save(user);
+        userLoginService.registerUser(user);
+        return user;
     }
 
     @PostMapping("/userLogin")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            User user = userLoginService.authenticate(loginRequest.email, loginRequest.password);
-            return ResponseEntity.ok(new AuthResponse());
+            User user = userLoginService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(new AuthResponse("Login Successful", "Secret message!"));
         } catch (UsernameNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Username/Password combination not found", null));
         }
     }
-
-    // LoginRequest.java
-    public class LoginRequest {
-        private String email;
-        private String password;
-        // getters and setters
     }
-
-    // AuthResponse.java
-    public class AuthResponse {
-        private String message;
-        private String email;
-        // constructor, getters, and setters
-    }
-}

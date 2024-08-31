@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="test_user_table", schema = "public")
+@Table(name = "test_user_table", schema = "public")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +24,8 @@ public class User {
 
     // Hibernate expects entities to have a no-arg constructor,
     // though it does not necessarily have to be public.
-    private User() {}
+    private User() {
+    }
 
     public User(String email, String firstName, String lastName, LocalDate dateOfBirth, String password) {
         this.email = email;
@@ -38,21 +39,47 @@ public class User {
         return this.id;
     }
 
-    public String getEmail() { return this.email; }
+    public void setId() {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail() {
+        this.email = email;
+    }
 
     public String getFirstName() {
         return this.firstName;
+    }
+
+    public void setFirstName() {
+        this.firstName = firstName;
     }
 
     public String getLastName() {
         return this.lastName;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public LocalDate getDateOfBirth() {
         return this.dateOfBirth;
     }
 
-    public  String getPassword() {
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = LocalDate.parse(dateOfBirth);
+    }
+
+    public String getPassword() {
         return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
