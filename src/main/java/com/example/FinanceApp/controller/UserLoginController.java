@@ -1,18 +1,28 @@
-package com.example.FinanceApp;
+package com.example.FinanceApp.controller;
 
-import com.example.FinanceApp.Objects.User;
-import com.example.FinanceApp.Objects.UserRepository;
+import com.example.FinanceApp.model.AuthResponse;
+import com.example.FinanceApp.model.LoginRequest;
+import com.example.FinanceApp.model.User;
+import com.example.FinanceApp.repository.UserRepository;
+import com.example.FinanceApp.service.UserLoginService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.StringJoiner;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-public class HelloController {
+public class UserLoginController {
 
+    @Autowired
+    private UserLoginService userLoginService;
+    @Autowired
     private final UserRepository userRepository;
 
-    public HelloController(UserRepository userRepository) {
+    public UserLoginController(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -47,7 +57,17 @@ public class HelloController {
 
     @PostMapping("/addUser")
     public User addOneUser(@RequestBody User user) {
-        return this.userRepository.save(user);
+        userLoginService.registerUser(user);
+        return user;
     }
 
-}
+    @PostMapping("/userLogin")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userLoginService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(new AuthResponse("Login Successful", "Secret message!"));
+        } catch (UsernameNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Username/Password combination not found", null));
+        }
+    }
+    }
