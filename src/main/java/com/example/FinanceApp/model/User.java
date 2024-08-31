@@ -1,4 +1,4 @@
-package com.example.FinanceApp.Objects;
+package com.example.FinanceApp.model;
 
 
 import jakarta.persistence.*;
