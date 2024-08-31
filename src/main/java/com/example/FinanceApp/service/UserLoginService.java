@@ -25,9 +25,11 @@ public class UserLoginService {
 
     public User registerUser(User user) {
         try {
-            userRepository.findByEmail(user.getEmail());
+            if(!userRepository.findByEmail(user.getEmail()).isEmpty()) {
+                throw new Exception();
+            }
         } catch (Exception e) {
-            throw new UsernameNotFoundException("Invalid email address");
+            throw new UsernameNotFoundException("This email address already exists");
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());

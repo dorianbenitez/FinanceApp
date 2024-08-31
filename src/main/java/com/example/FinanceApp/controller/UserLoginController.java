@@ -56,18 +56,29 @@ public class UserLoginController {
     }
 
     @PostMapping("/addUser")
-    public User addOneUser(@RequestBody User user) {
-        userLoginService.registerUser(user);
-        return user;
+    public ResponseEntity<AuthResponse> addOneUser(@RequestBody User user) {
+        try {
+            userLoginService.registerUser(user);
+            AuthResponse authResponse = new AuthResponse("User registration success!");
+            return ResponseEntity.ok(authResponse);
+        }
+        catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse("This email address already exists"));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse("There was an issue creating your account. Please try again."));
+        }
     }
 
     @PostMapping("/userLogin")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             User user = userLoginService.authenticate(loginRequest.getEmail(), loginRequest.getPassword());
-            return ResponseEntity.ok(new AuthResponse("Login Successful", "Secret message!"));
+            return ResponseEntity.ok(new AuthResponse("Login Successful"));
         } catch (UsernameNotFoundException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Username/Password combination not found", null));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Email/Password combination not found"));
         }
     }
     }
